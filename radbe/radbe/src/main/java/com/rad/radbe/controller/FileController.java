@@ -1,6 +1,7 @@
 package com.rad.radbe.controller;
 
 import com.rad.radbe.dto.DocSubmitTrack;
+import com.rad.radbe.dto.DocVerificationDto;
 import com.rad.radbe.entity.FileEntity;
 import com.rad.radbe.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,9 @@ public class FileController {
     public String verify(String status, Integer id){
         fileService.verify(status,id);
         return "Status changed: "+status;
+    }
+    @GetMapping("/document-verification")
+    public List<DocVerificationDto> loadFileAdmin() {
+        return fileService.getSubmitedRequest();
     }
 }

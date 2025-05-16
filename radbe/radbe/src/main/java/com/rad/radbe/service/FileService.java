@@ -1,6 +1,7 @@
 package com.rad.radbe.service;
 
 import com.rad.radbe.dto.DocSubmitTrack;
+import com.rad.radbe.dto.DocVerificationDto;
 import com.rad.radbe.entity.FileEntity;
 import com.rad.radbe.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,21 @@ public class FileService {
 
     public void verify(String status, Integer id) {
        fileRepository.verify(status,id);
+    }
+
+    public List<DocVerificationDto> getSubmitedRequest() {
+        List<FileEntity> fileList = fileRepository.findAll();
+        List<DocVerificationDto> trackList = new ArrayList<>();
+        for (FileEntity file : fileList) {
+            DocVerificationDto doc = new DocVerificationDto();
+            doc.setId(file.getId().toString());
+            doc.setName(file.getFileName());
+            doc.setType("Passport");
+            doc.setAiValid("Pending");
+            doc.setAdminApproved(file.getStatus());
+            trackList.add(doc);
+        }
+        return trackList;
+
     }
 }

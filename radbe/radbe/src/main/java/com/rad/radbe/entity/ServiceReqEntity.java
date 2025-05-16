@@ -12,8 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServiceRequestEntity {
-
+public class ServiceReqEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,14 +20,10 @@ public class ServiceRequestEntity {
     @Column(name = "service_type", nullable = false)
     private String serviceType;
 
-    @ElementCollection
-    @CollectionTable(name = "uploaded_documents", joinColumns = @JoinColumn(name = "request_id"))
-    @Column(name = "document")
-    private List<String> uploadedDocuments;
-
     @Column(nullable = false)
     private String description;
 
     @Column(name = "status")
     private String status;
+
 }

@@ -20,4 +20,7 @@ public class FileEntity {
 
     @Column(name = "file_path", nullable = false)
     private String filePath;
+
+    @Column(name="status")
+    private String status;
 }

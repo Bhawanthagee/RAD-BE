@@ -15,6 +15,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/files")
+@CrossOrigin(origins = "http://localhost:4200") // Allow requests from frontend
+
 public class FileController {
     @Autowired
     FileService fileService;

@@ -3,6 +3,7 @@ package com.rad.radbe.controller;
 import com.rad.radbe.dto.DocSubmitTrack;
 import com.rad.radbe.dto.DocVerificationDto;
 import com.rad.radbe.entity.FileEntity;
+import com.rad.radbe.service.ExternalApiClient;
 import com.rad.radbe.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,27 +22,29 @@ import java.util.List;
 public class FileController {
     @Autowired
     FileService fileService;
+    @Autowired
+    private ExternalApiClient externalApiClient;
 
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/";
-
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadAndSend(@RequestParam("file") MultipartFile file) {
         try {
+            // 🟢 First, send it to external API
+            String result = externalApiClient.sendFileToExternalAPI(file);
+
+            // 🟢 Then save it if needed
             File dir = new File(UPLOAD_DIR);
             if (!dir.exists()) dir.mkdirs();
-
             String filePath = UPLOAD_DIR + file.getOriginalFilename();
-            File destination = new File(filePath);
+            file.transferTo(new File(filePath));
 
-            file.transferTo(destination);
-
-            fileService.saveFile(file.getOriginalFilename(), filePath);
-
-            return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Error saving file: " + e.getMessage());
+            fileService.saveFile(file.getOriginalFilename(), filePath,result);
+            return ResponseEntity.ok("Verification Result: " + result);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
+
     @GetMapping("/load")
     public List<FileEntity> loadFile() {
         return fileService.getAll();

@@ -23,4 +23,7 @@ public class FileEntity {
 
     @Column(name="status")
     private String status;
+
+    @Column(name = "ai_validation")
+    private String aiValidation;
 }

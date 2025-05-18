@@ -5,7 +5,6 @@ import com.rad.radbe.dto.DocVerificationDto;
 import com.rad.radbe.entity.FileEntity;
 import com.rad.radbe.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,11 +17,12 @@ public class FileService {
     @Autowired
     FileRepository fileRepository;
 
-   public void saveFile(String fileName, String filePath){
+   public void saveFile(String fileName, String filePath, String result){
        FileEntity fileEntity = new FileEntity();
        fileEntity.setFileName(fileName);
        fileEntity.setFilePath(filePath);
        fileEntity.setStatus("Pending");
+       fileEntity.setAiValidation(result);
         fileRepository.save(fileEntity);
     }
 
@@ -64,7 +64,7 @@ public class FileService {
             doc.setId(file.getId().toString());
             doc.setName(file.getFileName());
             doc.setType("Passport");
-            doc.setAiValid("Pending");
+            doc.setAiValid(file.getAiValidation().equals("true")?"Approved":"Rejected");
             doc.setAdminApproved(file.getStatus());
             trackList.add(doc);
         }
